@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: task_api
+      POSTGRES_USER: task_api
+      POSTGRES_PASSWORD: task_api
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U task_api -d task_api"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - task_api_postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    environment:
+      DATABASE_URL: postgresql+asyncpg://task_api:task_api@db:5432/task_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && uvicorn task_api.main:app --host 0.0.0.0 --port 8000
+
+volumes:
+  task_api_postgres_data:

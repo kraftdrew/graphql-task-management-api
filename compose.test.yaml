@@ -1,0 +1,18 @@
+name: lush-home-task-tests
+
+services:
+  test-db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: task_api_test
+      POSTGRES_USER: task_api_test
+      POSTGRES_PASSWORD: task_api_test
+    ports:
+      - "55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U task_api_test -d task_api_test"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    tmpfs:
+      - /var/lib/postgresql/data

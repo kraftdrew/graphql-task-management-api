@@ -1,0 +1,9 @@
+services:
+  api:
+    # Docker Compose loads this development override automatically. The base
+    # file stays seed-free so an explicitly selected production startup cannot
+    # create demo data.
+    command:
+      - sh
+      - -c
+      - alembic upgrade head && python -m task_api.seed && uvicorn task_api.main:app --host 0.0.0.0 --port 8000
