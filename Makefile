@@ -20,7 +20,7 @@ run-dev-clean-db:
 stop:
 	$(DEV_COMPOSE) down
 
-test:
+run-tests:
 	@set -e; \
 	cleanup() { $(TEST_COMPOSE) down; }; \
 	trap cleanup EXIT; \
